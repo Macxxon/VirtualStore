@@ -3,12 +3,14 @@
 namespace app\controllers;
 
 use Yii;
+use yii\base\BaseObject;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\Users;
 
 class SiteController extends Controller
 {
@@ -125,4 +127,29 @@ class SiteController extends Controller
     {
         return $this->render('about');
     }
+
+    public function actionRegister()
+    {
+        $model = new Users();
+
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->validate()) {
+                // form inputs are valid, do something here
+                $model->username = $_POST['Users']['username'];
+                $model->password = password_hash($_POST['Users']['password'], PASSWORD_ARGON2I);
+                $model->authKey = md5(random_bytes(5));
+                $model->accessToken = password_hash(random_bytes(10),PASSWORD_DEFAULT);
+                if($model->save()){
+                    return $this->redirect(['login']);
+                }
+
+                return;
+            }
+        }
+
+        return $this->render('register', [
+            'model' => $model,
+        ]);
+    }
+
 }
