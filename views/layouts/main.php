@@ -39,13 +39,16 @@ AppAsset::register($this);
         ['label' => 'Home', 'url' => ['/site/index']],
         ['label' => 'About', 'url' => ['/site/about']],
         ['label' => 'Contact', 'url' => ['/site/contact']],
+
     ];
     if(Yii::$app->user->isGuest) {
         array_push($navItem,
             ['label' => 'Ingreso', 'url' => ['/site/login']],
             ['label' => 'Registro', 'url' => ['/site/register']]);
     }else {
-        array_push($navItem,'<li>'
+        array_push($navItem,
+            ['label' => 'Tiendas', 'url' => ['/stores/index']],
+            '<li>'
             . Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline'])
             . Html::submitButton(
                 'Cerrar Sesion (' . Yii::$app->user->identity->username . ')',
